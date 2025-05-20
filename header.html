@@ -1,168 +1,253 @@
-<!-- header.html 수정 -->
- <style>
-/* 기존 header, nav 스타일 유지하면서 추가/수정! */
+<!-- header.html 전체 수정 (스타일 포함) -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 페이지 타이틀은 각 페이지에서 설정하는 것이 좋음 -->
+    <link rel="stylesheet" href="/styles.css"> <!-- ★ 공통 CSS 링크 -->
+    <style>
+        /* 기존 header, nav 스타일 유지하면서 추가/수정! */
 
-header {
-    /* 기존 스타일 ... */
-    position: relative; /* ★ 모바일 메뉴 버튼 위치 기준점! */
-    display: flex; /* ★ 로고, 메뉴, 버튼 정렬 위해 플렉스 사용! */
-    align-items: center;
-    justify-content: space-between; /* ★ 양쪽 끝으로 배치! */
-}
+        header {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--primary); /* styles.css 에 정의된 변수 사용 */
+            color: var(--white);
+            padding: 0 2rem;
+            height: 100px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-/* ★★★ 모바일 메뉴 버튼 기본 스타일 (평소엔 숨김) ★★★ */
-.mobile-menu-button {
-    display: none; /* ★ 평소엔 안 보여! */
-    background: none;
-    border: none;
-    font-size: 2rem; /* ★ 아이콘 크기! */
-    color: var(--white); /* ★ 헤더 글자색과 동일하게! */
-    cursor: pointer;
-    padding: 0.5rem; /* ★ 클릭 영역 확보! */
-}
+        header .logo a {
+            display: inline-block; /* 로고 이미지 링크 */
+            vertical-align: middle; /* 세로 중앙 정렬 */
+        }
+        header .logo img {
+            height: 80px; /* ★ 헤더 높이에 맞춰 로고 크기 조절 (예시) */
+            width: auto; /* 비율 유지 */
+            vertical-align: middle; /* 이미지 세로 정렬 */
+        }
 
-/* ★★★ 미디어 쿼리! 화면 작아졌을 때 적용될 스타일! ★★★ */
-@media (max-width: 768px) { /* ★ 이 너비는 조절 가능! */
+        .mobile-menu-button {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--white);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
 
-    header .logo img {
-        /* ★ 로고 크기 줄이기! */
-        width: 180px; /* ★ 적당한 크기로! */
-        height: auto; /* ★ 비율 유지! */
-    }
+        .main-nav {
+            /* 데스크탑 네비게이션 기본 스타일 */
+        }
 
-    .main-nav {
-        /* ★ 네비게이션 메뉴 기본 숨김 처리! */
-        display: none;
-        /* ★ 화면 전체를 덮도록 설정 (클릭 시 나타날 때) */
-        position: absolute;
-        top: 100%; /* ★ 헤더 바로 아래! */
-        left: 0;
-        right: 0;
-        background-color: var(--primary-light); /* ★ 배경색! */
-        z-index: 999; /* ★ 다른 요소 위에! */
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
 
-    /* ★★★ JS로 .mobile-menu-open 클래스가 nav에 추가되면 보이도록! ★★★ */
-    .main-nav.mobile-menu-open {
-        display: block; /* ★ 짜잔! 하고 나타나기! */
-    }
-
-    .main-nav ul {
-        /* ★ 세로로 쌓기! */
-        flex-direction: column;
-        padding: 1rem 0; /* ★ 위아래 여백! */
-    }
-
-    .main-nav li {
-        margin: 0; /* ★ 왼쪽 여백 제거! */
-        text-align: center; /* ★ 가운데 정렬! */
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* ★ 구분선! */
-    }
-     .main-nav li:last-child {
-        border-bottom: none;
-     }
-
-    .main-nav a {
-        padding: 1rem; /* ★ 클릭 영역 넓게! */
-        display: block; /* ★ 전체 영역 클릭! */
-        color: #ffffff; /* ★ 글자색 하얗게! */
-    }
-    .main-nav a:hover {
-        background-color: var(--accent); /* ★ 호버 효과! */
-    }
-    
-/* ★★★ 모바일 드롭다운 메뉴 스타일 수정! ★★★ */
-    .main-nav .dropdown-menu {
-        /* display: none !important; /* 기본 숨김은 JS로 처리할 거니까 제거하거나 유지해도 됨 */
-        display: none; /* ★ JS로 .submenu-open 클래스가 추가되면 보이도록! */
-        position: static; /* ★★★ absolute 대신 static으로 변경! 중요! ★★★ */
-        background-color: rgba(0, 0, 0, 0.1); /* ★ 배경색 살짝 다르게 해서 구분! */
-        box-shadow: none; /* ★ 그림자 제거! */
-        padding: 0; /* ★ 패딩 제거! */
-        margin-top: 0; /* ★ 위쪽 마진 제거! */
-        width: 100%; /* ★ 부모 너비 꽉 채우기! */
-        border-top: 1px solid rgba(255, 255, 255, 0.1); /* ★ 상위 메뉴와 구분선! */
-    }
-
-    /* ★ JS로 .submenu-open 클래스가 li.dropdown에 추가되면 하위 메뉴 보이게! */
-    .main-nav li.dropdown.submenu-open > .dropdown-menu {
-        display: block;
-    }
+        .main-nav li {
+            margin-left: 2rem;
+            position: relative; /* 드롭다운 기준점 */
+        }
+         /* 데스크탑 드롭다운 기본 숨김 */
+        .main-nav .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--primary-light);
+            list-style: none;
+            padding: 10px 0;
+            margin: 0;
+            min-width: 160px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        /* 데스크탑 드롭다운 호버 시 보이기 */
+        .main-nav li.dropdown:hover > .dropdown-menu {
+            display: block;
+        }
+        .main-nav .dropdown-menu a {
+            color: #ffffff;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            white-space: nowrap;
+        }
+        .main-nav .dropdown-menu a:hover {
+            background-color: var(--accent);
+        }
 
 
-    .main-nav .dropdown-menu li {
-        border-bottom: none; /* ★ 하위 메뉴 항목엔 구분선 제거! */
-    }
-
-    .main-nav .dropdown-menu a {
-        padding: 0.8rem 1rem; /* ★ 패딩 살짝 줄이기! */
-        font-size: 0.9rem; /* ★ 폰트 크기 살짝 줄이기! */
-        color: #eee; /* ★ 글자색 살짝 연하게! */
-        background-color: transparent; /* ★ 배경색 투명하게! */
-    }
-     .main-nav .dropdown-menu a:hover {
-        background-color: rgba(255, 255, 255, 0.1); /* ★ 호버 시 배경색 살짝! */
-     }
-
-    /* ★ 드롭다운 기능 활성화 표시 (선택사항) */
-    .main-nav li.dropdown > a::after {
-        content: ' ▼'; /* ★ 클릭 가능한 드롭다운임을 표시! */
-        display: inline-block; /* ★ 옆으로 보이게! */
-        font-size: 0.7em; /* ★ 아이콘 크기 작게! */
-        margin-left: 0.5em; /* ★ 간격! */
-        transition: transform 0.3s ease; /* ★ 부드러운 회전 효과! */
-    }
-    /* ★ 하위 메뉴 열렸을 때 화살표 방향 변경! */
-    .main-nav li.dropdown.submenu-open > a::after {
-        transform: rotate(180deg);
-    }
+        .main-nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 0;
+            display: block; /* 기본 block 유지 */
+        }
+         /* 데스크탑에서는 화살표 숨김 */
+        .main-nav li.dropdown > a::after {
+            content: none;
+        }
 
 
-    /* ★ 모바일 메뉴 버튼 보이기! */
-    .mobile-menu-button {
-        display: block; /* ★ 화면 작을 때만 보이게! */
-    }
-}
-</style>
+        /* ★★★ 모바일 화면 스타일 시작 ★★★ */
+        @media (max-width: 768px) {
 
-<header>
-  <div class="logo">
-    <!-- ★ 모바일용 로고 이미지나 크기 조절을 위한 클래스 추가 고려! -->
-    <a href="/index.html"> <!-- ★ 링크는 절대경로(/)로! -->
-    <img src="/Logo.png" alt="Logo" style="width: 256px;height: 100px;"/>
-    </a>
-  </div>
-  <!-- ★★★ 모바일용 햄버거 버튼 추가! ★★★ -->
-  <button class="mobile-menu-button" aria-label="메뉴 열기" aria-expanded="false">
-      ☰ <!-- ★ 아이콘은 나중에 이미지나 아이콘 폰트로 바꾸는 게 좋아! -->
-  </button>
-  <!-- ★★★ 네비게이션 메뉴에 클래스 추가 및 구조 살짝 변경! ★★★ -->
-  <nav class="main-nav"> <!-- ★ 클래스 추가! -->
-    <ul>
-      <li class="dropdown">
-        <a href="/prof/prof.html">교수 소개</a> <!-- ★ 링크 절대경로! -->
-        <ul class="dropdown-menu">
-          <li><a href="/prof/prof_cv.html">이력서</a></li> <!-- ★ 링크 절대경로! -->
-          <li><a href="/prof/prof_awards.html">수상 내역</a></li> <!-- ★ 링크 절대경로! -->
+            header .logo img {
+                height: 60px; /* ★ 모바일 로고 크기 줄이기! */
+            }
+
+            /* ★ 데스크탑 네비게이션 숨기기! */
+            .main-nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--primary-light);
+                z-index: 999;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+            /* JS로 클래스 추가 시 보이기 */
+            .main-nav.mobile-menu-open {
+                display: block;
+            }
+
+            .main-nav ul {
+                flex-direction: column; /* 세로 쌓기 */
+                padding: 0; /* 패딩 제거 또는 조절 */
+            }
+
+            .main-nav li {
+                margin: 0; /* 마진 제거 */
+                text-align: center;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                position: relative; /* 드롭다운 기준점 유지 */
+            }
+            .main-nav li:last-child { border-bottom: none; }
+
+            .main-nav a {
+                display: flex; /* ★ flex 로 변경! */
+                justify-content: center;
+                align-items: center; /* ★ 세로 중앙 정렬! */
+                padding: 1rem;
+                color: #ffffff;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .main-nav a:hover { background-color: var(--accent); }
+
+            /* ★★★ 드롭다운 화살표가 a 태그 내에서 정렬되도록 수정 ★★★ */
+            .main-nav li.dropdown > a {
+                /* flex 설정은 위에서 했으므로 유지 */
+                position: relative; /* ::after 요소 기준점 (선택사항) */
+            }
+            /* ★★★ a 태그 안에 텍스트를 span으로 감싸서 처리! ★★★ */
+            .main-nav li.dropdown > a span {
+                flex-grow: 1; /* 텍스트가 남은 공간 차지 */
+                text-align: center; /* 텍스트 가운데 정렬 */
+            }
+
+            .main-nav li.dropdown > a::after {
+                content: ' ▼';
+                font-size: 0.7em;
+                /* margin-left: 0.5em; */ /* flex 사용 시 margin 대신 다른 방식 고려 */
+                /* ★ flex item 이므로 margin 대신 order나 다른 방식, 혹은 그냥 두기 */
+                transition: transform 0.3s ease;
+                /* ★ align-items: center 로 이미 수직 정렬됨! */
+                padding-left: 0.5em; /* ★ 텍스트와 간격 살짝 주기 */
+            }
+            .main-nav li.dropdown.submenu-open > a::after {
+                transform: rotate(180deg);
+            }
+
+
+            /* 모바일 드롭다운 메뉴 스타일 */
+            .main-nav .dropdown-menu {
+                display: none; /* JS로 제어 */
+                position: static; /* 아래로 펼쳐지도록 */
+                background-color: rgba(0, 0, 0, 0.2); /* 연한 배경색 */
+                box-shadow: none;
+                padding: 0;
+                margin-top: 0;
+                width: 100%;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .main-nav li.dropdown.submenu-open > .dropdown-menu {
+                display: block;
+            }
+
+            .main-nav .dropdown-menu li { border-bottom: none; }
+            .main-nav .dropdown-menu a {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+                color: #eee;
+                background-color: transparent;
+                justify-content: center;
+                /* 하위 메뉴에는 화살표 없으므로 ::after 숨기기 */
+            }
+             .main-nav .dropdown-menu a::after { content: none; }
+
+            .main-nav .dropdown-menu a:hover { background-color: rgba(255, 255, 255, 0.1); }
+
+
+            /* 모바일 메뉴 버튼 보이기 */
+            .mobile-menu-button { display: block; }
+        }
+    </style>
+
+    <header>
+      <div class="logo">
+        <a href="/index.html">
+        <img src="/Logo.png" alt="Logo"/> <!-- 인라인 스타일 제거 -->
+        </a>
+      </div>
+      <button class="mobile-menu-button" aria-label="메뉴 열기" aria-expanded="false">☰</button>
+      <nav class="main-nav">
+        <ul>
+          <li class="dropdown">
+            <!-- ★★★ a 태그 안에 span 추가! ★★★ -->
+            <a href="/prof.html"><span>교수 소개</span></a>
+            <ul class="dropdown-menu">
+              <li><a href="/prof_cv.html">이력서</a></li>
+              <li><a href="/prof_awards.html">수상 내역</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <!-- ★★★ a 태그 안에 span 추가! ★★★ -->
+            <a href="/research.html"><span>연구 소개</span></a>
+            <ul class="dropdown-menu">
+              <li><a href="/research_main.html">연구 소개</a></li>
+              <li><a href="/research_detail.html">주요 연구</a></li>
+            </ul>
+          </li>
+          <li>
+            <!-- ★ 일관성을 위해 다른 메뉴에도 span 추가 (선택사항) -->
+            <a href="/publication.html"><span>Publication</span></a>
+          </li> 
+          <li class="dropdown">
+            <!-- ★★★ a 태그 안에 span 추가! ★★★ -->
+            <a href="/people.html"><span>People</span></a>
+            <ul class="dropdown-menu">
+              <li><a href="/people_current.html">People</a></li>
+              <li><a href="/people_alumni.html">Alumni</a></li>
+            </ul>
+          </li>
+          <li>
+            <!-- ★ 일관성을 위해 다른 메뉴에도 span 추가 (선택사항) -->
+            <a href="/contact.html"><span>Contact</span></a>
+          </li> 
         </ul>
-      </li>
-      <li class="dropdown">
-        <a href="/research.html">연구 소개</a> <!-- ★ 링크 절대경로! -->
-        <ul class="dropdown-menu">
-          <li><a href="/research_main.html">연구 소개</a></li> <!-- ★ 링크 절대경로! -->
-          <li><a href="/research_detail.html">주요 연구</a></li> <!-- ★ 링크 절대경로! -->
-        </ul>
-      </li>
-      <li><a href="/publication.html">Publication</a></li> <!-- ★ 링크 절대경로! -->
-      <li class="dropdown">
-        <a href="/people/people.html">People</a> <!-- ★ 링크 절대경로! -->
-        <ul class="dropdown-menu">
-          <li><a href="/people/people_current.html">People</a></li> <!-- ★ 링크 절대경로! -->
-          <li><a href="/people/people_alumni.html">Alumni</a></li> <!-- ★ 링크 절대경로! -->
-        </ul>
-      </li>
-      <li><a href="/contact.html">Contact</a></li> <!-- ★ 링크 절대경로! -->
-    </ul>
-  </nav>
-</header>
+      </nav>
+    </header>
+    <!-- ★★★ header.html 에는 스크립트 로직 없음! script.js 에서 처리! ★★★ -->
+</html>
