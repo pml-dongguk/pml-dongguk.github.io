@@ -27,6 +27,7 @@ header {
   padding: 0 2rem;
   height: 100px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative /* 드롭 다운 메뉴 위치 기준점을 위해 추가*/
 }
 
 header .logo {
@@ -41,6 +42,7 @@ nav ul {
 
 nav li {
   margin-left: 2rem;
+  position: relative /* 드롭 다운 메뉴 위치 기준점을 위해 추가*/
 }
 
 nav a {
@@ -49,6 +51,8 @@ nav a {
   font-weight: 500;
   position: relative;
   transition: color 0.3s;
+  padding: 10px 0; /* ★ 클릭 영역 확보 및 디자인 개선 */
+  display: block; /* 블록 요소로 만들어야 패딩이 제대로 들어감 */
 }
 
 nav a::after {
@@ -69,6 +73,51 @@ nav a:hover {
 nav a:hover::after {
   width: 100%;
 }
+
+/* 드롭다운 메뉴 기본 스타일 */
+nav .dropdown-menu {
+  display: none; 
+  position: absolute; /* ★ 부모(li.dropdown) 기준으로 위치*/
+  top: 100%; /* ★ 부모 바로 아래에 */
+  left: 0;
+  background-color: var(--primary-light); 
+  list-style: none;
+  padding: 10px 0; /* ★ 메뉴 안쪽 여백 */
+  margin: 0; /* ★ 간격 없애기 */
+  min-width: 160px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000; 
+}
+
+/* 드롭다운 메뉴 항목 스타일 */
+nav .dropdown-menu li {
+  margin: 0; 
+}
+
+nav .dropdown-menu a {
+  color: #ffffff; 
+  padding: 12px 16px; /* ★ 항목별 패딩 */
+  text-decoration: none;
+  display: block; /* ★ 전체 영역 클릭 가능하게 */
+  white-space: nowrap; /* 줄바꿈 방지 */
+  font-weight: normal; /* 기본 링크보다 얇게 */
+}
+
+nav .dropdown-menu a::after {
+    display: none; 
+}
+
+
+nav .dropdown-menu a:hover {
+  background-color: var(--accent); /*  마우스 올리면 배경색 변경 */
+  color: #ffffff; 
+}
+
+/* .dropdown에 마우스 올리면(.hover) .dropdown-menu를 보여줄 수 있게게 */
+nav li.dropdown:hover > .dropdown-menu {
+  display: block;
+}
+
 
 /* Carousel */
 .carousel {
@@ -165,11 +214,29 @@ nav a:hover::after {
 }
 
 /* Mobile */
+/*
 @media (max-width: 768px) {
   nav ul {
     display: none;
   }
   header {
     padding: 0 1rem;
+  }
+}
+*/
+
+/* Mobile */
+@media (max-width: 768px) {
+  /* 모바일에서는 드롭다운 말고 다른 방식 고려할할것 */
+  nav ul {
+    /* display: none; 일단 주석처리 모바일 메뉴는 나중에 다시 생각*/
+  }
+  header {
+    padding: 0 1rem;
+  }
+  /* 모바일 드롭다운은 클릭으로 동작하게 JS로 나중에 구현현 */
+  nav li.dropdown:hover > .dropdown-menu {
+      /* 모바일에서는 hover가 잘 안 먹힐 수 있으니 일단 비활성화 */
+      /* display: none; */
   }
 }

@@ -9,18 +9,36 @@
   </head>
   <body>
     <header>
-    <div class="logo">
+      <div class="logo">
         <a href="./index.html">
         <img src="./Logo.png" alt="Logo"
         style="width: 256px;height: 100px;"/>
         </a>
-    </div>
+      </div>
       <nav>
         <ul>
-          <li><a href="prof.html">교수 소개</a></li>
-          <li><a href="research.html">연구 소개</a></li>
+          <li class="dropdown">
+            <a href="prof.html">교수 소개</a>
+            <ul class="dropdown-menu">
+              <li><a href="prof_cv.html">이력서</a></li>
+              <li><a href="prof_awards.html">수상 내역</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="research.html">연구 소개</a>
+            <ul class="dropdown-menu">
+              <li><a href="research_main.html">연구 소개</a></li>
+              <li><a href="research_detail.html">주요 연구</a></li>
+            </ul>
+          </li>
           <li><a href="publication.html">Publication</a></li>
-          <li><a href="people.html">People</a></li>
+          <li class="dropdown">
+            <a href="people.html">People</a>
+            <ul class="dropdown-menu">
+              <li><a href="people_current.html">People</a></li>
+              <li><a href="people_alumni.html">Alumni</a></li>
+            </ul>
+          </li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
       </nav>
