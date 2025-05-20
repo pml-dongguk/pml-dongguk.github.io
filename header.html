@@ -1,35 +1,156 @@
+<!-- header.html 수정 -->
+ <style>
+/* 기존 header, nav 스타일 유지하면서 추가/수정! */
+
+header {
+    /* 기존 스타일 ... */
+    position: relative; /* ★ 모바일 메뉴 버튼 위치 기준점! */
+    display: flex; /* ★ 로고, 메뉴, 버튼 정렬 위해 플렉스 사용! */
+    align-items: center;
+    justify-content: space-between; /* ★ 양쪽 끝으로 배치! */
+}
+
+/* ★★★ 모바일 메뉴 버튼 기본 스타일 (평소엔 숨김) ★★★ */
+.mobile-menu-button {
+    display: none; /* ★ 평소엔 안 보여! */
+    background: none;
+    border: none;
+    font-size: 2rem; /* ★ 아이콘 크기! */
+    color: var(--white); /* ★ 헤더 글자색과 동일하게! */
+    cursor: pointer;
+    padding: 0.5rem; /* ★ 클릭 영역 확보! */
+}
+
+/* ★★★ 미디어 쿼리! 화면 작아졌을 때 적용될 스타일! ★★★ */
+@media (max-width: 768px) { /* ★ 이 너비는 조절 가능! */
+
+    header .logo img {
+        /* ★ 로고 크기 줄이기! */
+        width: 180px; /* ★ 적당한 크기로! */
+        height: auto; /* ★ 비율 유지! */
+    }
+
+    .main-nav {
+        /* ★ 네비게이션 메뉴 기본 숨김 처리! */
+        display: none;
+        /* ★ 화면 전체를 덮도록 설정 (클릭 시 나타날 때) */
+        position: absolute;
+        top: 100%; /* ★ 헤더 바로 아래! */
+        left: 0;
+        right: 0;
+        background-color: var(--primary-light); /* ★ 배경색! */
+        z-index: 999; /* ★ 다른 요소 위에! */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    /* ★★★ JS로 .mobile-menu-open 클래스가 nav에 추가되면 보이도록! ★★★ */
+    .main-nav.mobile-menu-open {
+        display: block; /* ★ 짜잔! 하고 나타나기! */
+    }
+
+    .main-nav ul {
+        /* ★ 세로로 쌓기! */
+        flex-direction: column;
+        padding: 1rem 0; /* ★ 위아래 여백! */
+    }
+
+    .main-nav li {
+        margin: 0; /* ★ 왼쪽 여백 제거! */
+        text-align: center; /* ★ 가운데 정렬! */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* ★ 구분선! */
+    }
+     .main-nav li:last-child {
+        border-bottom: none;
+     }
+
+    .main-nav a {
+        padding: 1rem; /* ★ 클릭 영역 넓게! */
+        display: block; /* ★ 전체 영역 클릭! */
+        color: #ffffff; /* ★ 글자색 하얗게! */
+    }
+    .main-nav a:hover {
+        background-color: var(--accent); /* ★ 호버 효과! */
+    }
+    /* ★ 드롭다운 메뉴 숨기기 (모바일에선 보통 다른 방식으로 처리) */
+    .main-nav .dropdown-menu {
+        display: none !important; /* ★ 확실하게 숨기기! */
+    }
+    /* ★ 드롭다운 기능 대신, 메인 메뉴 항목을 클릭 가능하게 하거나 다른 UI 고려! */
+    .main-nav li.dropdown > a::after { /* ★ 드롭다운 표시(화살표 등) 제거 */
+        /* content: ' ▼'; /* 예시 화살표 - 필요하면 추가 */
+        display: none;
+     }
+
+
+    /* ★ 모바일 메뉴 버튼 보이기! */
+    .mobile-menu-button {
+        display: block; /* ★ 화면 작을 때만 보이게! */
+    }
+}
+</style>
+
 <header>
   <div class="logo">
-    <a href="/index.html">
-    <img src="/Logo.png" alt="Logo"
-    style="width: 256px;height: 100px;"/>
+    <!-- ★ 모바일용 로고 이미지나 크기 조절을 위한 클래스 추가 고려! -->
+    <a href="/index.html"> <!-- ★ 링크는 절대경로(/)로! -->
+    <img src="/Logo.png" alt="Logo" style="width: 256px;height: 100px;"/>
     </a>
   </div>
-  <nav>
+  <!-- ★★★ 모바일용 햄버거 버튼 추가! ★★★ -->
+  <button class="mobile-menu-button" aria-label="메뉴 열기" aria-expanded="false">
+      ☰ <!-- ★ 아이콘은 나중에 이미지나 아이콘 폰트로 바꾸는 게 좋아! -->
+  </button>
+  <!-- ★★★ 네비게이션 메뉴에 클래스 추가 및 구조 살짝 변경! ★★★ -->
+  <nav class="main-nav"> <!-- ★ 클래스 추가! -->
     <ul>
       <li class="dropdown">
-        <a href="/prof/prof.html">교수 소개</a>
+        <a href="/prof/prof.html">교수 소개</a> <!-- ★ 링크 절대경로! -->
         <ul class="dropdown-menu">
-          <li><a href="/prof/prof_cv.html">이력서</a></li>
-          <li><a href="/prof/prof_awards.html">수상 내역</a></li>
+          <li><a href="/prof/prof_cv.html">이력서</a></li> <!-- ★ 링크 절대경로! -->
+          <li><a href="/prof/prof_awards.html">수상 내역</a></li> <!-- ★ 링크 절대경로! -->
         </ul>
       </li>
       <li class="dropdown">
-        <a href="research.html">연구 소개</a>
+        <a href="/research.html">연구 소개</a> <!-- ★ 링크 절대경로! -->
         <ul class="dropdown-menu">
-          <li><a href="research_main.html">연구 소개</a></li>
-          <li><a href="research_detail.html">주요 연구</a></li>
+          <li><a href="/research_main.html">연구 소개</a></li> <!-- ★ 링크 절대경로! -->
+          <li><a href="/research_detail.html">주요 연구</a></li> <!-- ★ 링크 절대경로! -->
         </ul>
       </li>
-      <li><a href="/publication.html">Publication</a></li>
+      <li><a href="/publication.html">Publication</a></li> <!-- ★ 링크 절대경로! -->
       <li class="dropdown">
-        <a href="/people/people.html">People</a>
+        <a href="/people/people.html">People</a> <!-- ★ 링크 절대경로! -->
         <ul class="dropdown-menu">
-          <li><a href="/people/people_current.html">People</a></li>
-          <li><a href="/people/people_alumni.html">Alumni</a></li>
+          <li><a href="/people/people_current.html">People</a></li> <!-- ★ 링크 절대경로! -->
+          <li><a href="/people/people_alumni.html">Alumni</a></li> <!-- ★ 링크 절대경로! -->
         </ul>
       </li>
-      <li><a href="/contact.html">Contact</a></li>
+      <li><a href="/contact.html">Contact</a></li> <!-- ★ 링크 절대경로! -->
     </ul>
   </nav>
 </header>
+
+<script>
+// ★ DOM 로드 후 실행!
+document.addEventListener('DOMContentLoaded', function() {
+    const menuButton = document.querySelector('.mobile-menu-button');
+    const mainNav = document.querySelector('.main-nav');
+
+    // ★ 버튼 있는지, 메뉴 있는지 확인! (오류 방지!)
+    if (menuButton && mainNav) {
+        menuButton.addEventListener('click', function() {
+            // ★ 클래스 토글! (있으면 없애고, 없으면 추가하고!)
+            mainNav.classList.toggle('mobile-menu-open');
+
+            // ★ 버튼 ARIA 속성 업데이트 (접근성!)
+            const isExpanded = mainNav.classList.contains('mobile-menu-open');
+            menuButton.setAttribute('aria-expanded', isExpanded);
+            // ★ 버튼 아이콘 변경 (선택 사항)
+            menuButton.innerHTML = isExpanded ? '✕' : '☰'; // 닫기 아이콘 / 메뉴 아이콘
+        });
+    }
+
+    // ★ 헤더 로딩 코드는 여기에 있거나 다른 파일에 있겠지? (기존 코드 유지)
+    // fetch(location.origin + '/header.html')...
+});
+</script>
