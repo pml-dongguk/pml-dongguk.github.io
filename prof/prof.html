@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>연구실 홈페이지</title>
+    <!-- 외부 스타일 및 스크립트 -->
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        /* ★ 섹션 전체를 감싸는 컨테이너! */
+        .prof-container {
+            display: flex; /* ★ 플렉스박스 레이아웃 사용! 이게 핵심이야! */
+            justify-content: center; /* ★ 가로축 중앙 정렬! */
+            align-items: flex-start; /* ★ 세로축 상단 정렬 (아이템 높이 다를 경우 대비) */
+            gap: 2rem; /* ★ 두 박스 사이 간격! 적당히 조절해~♡ */
+            padding: 2rem; /* ★ 섹션 안쪽 여백! */
+            max-width: 1600px; /* ★ 너무 넓어지지 않게 최대 너비 제한! */
+            margin: 2rem auto; /* ★ 페이지 중앙에 오도록! */
+        }
+
+        /* ★ 왼쪽 사진 박스! */
+        .prof-photo-box {
+            flex: 1; /* ★ 남는 공간 1 비율 차지 (일단 동일 비율로!) */
+            max-width: 600px; /* ★ 사진 크기 고려해서 최대 너비 설정! */
+            /* background-color: #eee; */ /* ★ 박스 영역 보려면 배경색 임시로! */
+            padding: 1rem; /* ★ 박스 안쪽 여백! */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* ★ 그림자 효과 살짝~♡ */
+            border-radius: 8px; /* ★ 모서리 둥글게~♡ */
+        }
+
+        .prof-photo-box img {
+            width: 100%; /* ★ 박스 너비에 맞게! */
+            height: auto; /* ★ 비율 유지! */
+            display: block; /* ★ 이미지 아래 불필요한 공백 제거! */
+            border-radius: 4px; /* ★ 이미지 모서리도 살짝 둥글게! */
+        }
+
+        /* ★ 오른쪽 정보 박스! */
+        .prof-info-box {
+            flex: 2; /* ★ 남는 공간 2 비율 차지 */
+            /* background-color: #f8f8f8; */ /* ★ 박스 영역 보려면 배경색 임시로! */
+            padding: 1rem; /* ★ 박스 안쪽 여백! */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* ★ 그림자 효과 살짝~♡ */
+            border-radius: 8px; /* ★ 모서리 둥글게~♡ */
+        }
+
+        .prof-info-box h1 {
+            margin-bottom: 1.5rem; /* ★ 이름 아래 간격! */
+            font-size: 2rem; /* ★ 이름 크기 키우기! */
+            color: var(--primary-light); /* ★ 이름 색상 강조! */
+        }
+
+        .prof-info-box ul {
+            list-style: none; /* ★ 기본 리스트 스타일 제거! */
+            padding: 0;
+            margin: 0;
+        }
+
+        .prof-info-box li {
+            margin-bottom: 1rem; /* ★ 항목 간 간격! */
+            border-bottom: 1px solid #eee; /* ★ 구분선 살짝! */
+            padding-bottom: 1rem; /* ★ 구분선 아래 여백! */
+            display: flex; /* ★ 제목과 내용 정렬 위해 플렉스! */
+            align-items: baseline; /* ★ 기준선 맞추기! */
+        }
+         .prof-info-box li:last-child {
+            border-bottom: none; /* ★ 마지막 항목 구분선 제거! */
+         }
+
+        .prof-info-box li > span:first-child { /* ★ 연락처, 이메일 같은 제목 부분 */
+            font-weight: bold; /* ★ 굵게! */
+            min-width: 120px; /* ★ 너비 고정해서 정렬 맞추기! */
+            margin-right: 1rem; /* ★ 오른쪽 여백! */
+            color: #555;
+        }
+         .prof-info-box .blind { /* ★ 스크린리더용 텍스트 숨기기! */
+             position: absolute;
+             width: 1px;
+             height: 1px;
+             margin: -1px;
+             overflow: hidden;
+             clip: rect(0, 0, 0, 0);
+             white-space: nowrap;
+             border: 0;
+         }
+
+        .prof-info-box .txt { /* ★ 실제 내용 부분 */
+            flex-grow: 2; /* ★ 남은 공간 다 차지! */
+            line-height: 1.6; /* ★ 줄 간격 늘려서 가독성 확보! */
+            color: #333;
+        }
+        .prof-info-box .txt a { /* ★ 이메일 링크 스타일! */
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .prof-info-box .txt a:hover {
+            text-decoration: underline;
+        }
+
+        /* ★ 대표 논문/저서 줄바꿈 처리! */
+        .prof-info-box .txt br {
+            margin-bottom: 0.5rem; /* ★ 줄바꿈 후 간격 살짝! */
+            display: block; /* ★ 확실하게 줄바꿈! */
+            content: ""; /* ★ 필수! */
+        }
+
+
+        /* ★ 모바일 반응형! 화면 작아지면 세로로 쌓기! */
+        @media (max-width: 768px) {
+            .prof-container {
+                flex-direction: column; /* ★ 세로로 쌓기! */
+                align-items: center; /* ★ 가운데 정렬! */
+            }
+            .prof-photo-box,
+            .prof-info-box {
+                flex: none; /* ★ 비율 설정 해제! */
+                width: 90%; /* ★ 너비 적당히 조절! */
+                max-width: 600px; /* ★ 최대 너비 유지! */
+            }
+        }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+     <!-- ★★★ 클래스 추가해서 CSS 적용! ★★★ -->
+    <section class="prof-container">
+        <!-- ★ 왼쪽 사진 박스 -->
+        <div class="prof-photo-box">
+            <!-- ★ 인라인 스타일 제거! CSS로 관리! -->
+            <img src="/image.jpg" alt="이충호" />
+        </div>
+        <!-- ★ 오른쪽 정보 박스 -->
+        <div class="prof-info-box">
+            <!-- ★ 의미 없는 span 제거! -->
+            <h1>Choongho Lee</h1>
+            <ul>
+                <li class="tel"><span class="blind">연락처</span> <!-- ★ 스크린리더 고려! -->
+                    <div class="txt">031-961-5223</div>
+                </li>
+                <li class="mail"><span class="blind">E-mail</span>
+                    <div class="txt">
+                        <a href="mailto:choongholee@dongguk.edu">choongholee@dongguk.edu</a>
+                    </div>
+                </li>
+                <li class="location"><span class="blind">교수연구실</span>
+                    <div class="txt">바이오메디캠퍼스 약학관 437호</div>
+                </li>
+                <li><span>최종 학력</span> <!-- ★ 항목 제목은 span으로 감싸는 게 좋을 듯! -->
+                    <div class="txt">Northwestern University School of Medicine Dept of Microbiology &amp; Immunology</div>
+                </li>
+                <li><span>전공 분야</span>
+                    <div class="txt">미생물</div>
+                </li>
+                <li><span>세부 연구분야</span>
+                    <div class="txt">바이러스학, 분자생물학, 면역학</div>
+                </li>
+            </ul>
+            <!-- ★ 추가 정보 부분도 ul/li 구조로 통일하는 게 더 깔끔할 듯! -->
+            <div class="prof_more_cont" data-index="9" style="margin-top: 2rem; border-top: 2px solid var(--primary); padding-top: 2rem;"> <!-- ★ 구분선 및 간격 추가! -->
+                <h2>경력 및 상세 정보</h2> <!-- ★ 소제목 추가! -->
+                <ul>
+                    <li><span>학사학위 과정</span>
+                        <div class="txt">서울대학교 / 약학대학 / 약학과</div>
+                    </li>
+                    <li><span>박사학위 과정</span> <!-- ★ line 클래스 제거! -->
+                        <div class="txt">Northwestern University School of Medicine Dept of Microbiology &amp; Immunology</div>
+                    </li>
+                    <li><span>담당 과목</span>
+                        <div class="txt">약품미생물학 / 면역학 / 의약학 영어 / 항생물질학</div>
+                    </li>
+                    <li><span>대표 저서</span>
+                        <div class="txt">약품미생물학 요약 및 연습, 제1판, 한국약학교육협의회 감염미생물 면역약학 분과회, 라이프사이언스, 2014.
+<br>Lee C, Laimins L. The differentiation-dependent life cycle of human papillomaviruses, In The Papillomaviruses (D. DiMaio and R. Garcia Eds), Springer, First edition, pp. 45-58, 2007.
+                        </div>
+                    </li>
+                    <li><span>대표 논문</span>
+                        <div class="txt">Cho M, Kim YM, Lee S, Chin YW, Lee C. (2014) Mangosteen xanthones suppress hepatitis C virus genome replication. Virus Genes., 49:208-22.
+<br>Cho M, Lee S, Cho T, Lee C. (2014) Roles of the PDZ domain-binding motif of the human papillomavirus type 16 E6 on the immortalization and differentiation of primary human foreskin keratinocytes. Virus Genes., 48: 224-32.
+<br>Lee C. (2013) Daclatasvir: potential role in hepatitis C. Drug Des Devel Ther., 7:1223-33.
+                        </div>
+                    </li>
+                    <li><span>경력</span>
+                        <div class="txt">Postdoctoral researcher at Stanford University School of Medicine, Stanford, California, May 2005 to Dec 2008
+<br>Postdoctoral researcher at Roche Pharmaceutical in Palo Alto, Jan 2009 to Dec 2010
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <script src="/script.js" defer></script>
+  </body>
+</html>

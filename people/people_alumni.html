@@ -5,9 +5,164 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>연구실 홈페이지</title>
     <!-- 외부 스타일 및 스크립트 -->
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="/styles.css" />
+     <style>
+        /* ★★★ 카드 레이아웃 스타일 ★★★ */
+        .people-container {
+            display: grid; /* ★ 그리드 레이아웃 사용! 카드 배치에 딱이야! */
+            /* ★ 화면 크기에 따라 자동으로 열 개수 조절! */
+            grid-template-columns: repeat(2, minmax(300px, 1fr)); /* ★ 최소 300px, 공간 남으면 1fr씩 차지! */
+            gap: 2rem; /* ★ 카드 사이 간격! */
+            padding: 2rem; /* ★ 전체 컨테이너 안쪽 여백! */
+            max-width: 1600px; /* ★ 최대 너비 설정! (마스터가 원한 대로!) */
+            margin: 2rem auto; /* ★ 페이지 중앙 정렬! */
+        }
+
+        .member-card {
+            display: flex; /* ★ 카드 내부 요소(사진, 정보) 가로 배치! */
+            background-color: #fff; /* ★ 카드 배경색! */
+            border-radius: 8px; /* ★ 모서리 둥글게~♡ */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* ★ 그림자 효과! */
+            overflow: hidden; /* ★ 내부 요소 튀어나오지 않게! */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* ★ 호버 효과 부드럽게~♡ */
+        }
+
+        .member-card:hover {
+            transform: translateY(-5px); /* ★ 살짝 위로 뜨는 효과! */
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* ★ 그림자 더 진하게! */
+        }
+
+        /* ★ 카드 왼쪽 - 사진 영역 */
+        .member-photo {
+            flex-shrink: 0; /* ★ 사진 영역 줄어들지 않게! */
+            width: 120px; /* ★ 사진 너비 고정! */
+            height: 150px; /* ★ 사진 높이 고정! (비율 맞춰서 조절해~) */
+            /* background-color: #eee; */ /* ★ 임시 배경색 */
+        }
+
+        .member-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* ★ 비율 유지하면서 꽉 채우기! */
+            display: block;
+        }
+
+        /* ★ 카드 오른쪽 - 정보 영역 */
+        .member-info {
+            padding: 1rem 1.5rem; /* ★ 정보 영역 안쪽 여백! */
+            display: flex;
+            flex-direction: column; /* ★ 정보들 세로로 쌓기! */
+            justify-content: center; /* ★ 세로 중앙 정렬 (내용 적을 때 대비) */
+            flex-grow: 1; /* ★ 남은 공간 다 차지! */
+        }
+
+        .member-info h3 { /* ★ 이름 */
+            margin: 0 0 0.5rem 0; /* ★ 아래쪽 여백만 살짝! */
+            font-size: 1.25rem;
+            color: var(--primary-light);
+        }
+
+        .member-info p { /* ★ 학과, 전공 등 */
+            margin: 0.25rem 0; /* ★ 위아래 여백 살짝! */
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.4;
+        }
+         .member-info p strong { /* ★ 학과/전공 같은 라벨 굵게! */
+             font-weight: bold;
+             margin-right: 0.5em; /* ★ 라벨이랑 내용 사이 간격 */
+         }
+
+        .member-info .work{ /* ★ 현 직장 정보 */
+            font-size: 0.9rem;
+            color: var(--accent);
+            text-decoration: none;
+            word-break: break-all; /* 현 직장 정보가 길면 줄바꿈! */
+        }
+
+        .member-info .email a { /* ★ 이메일 */
+            font-size: 0.9rem;
+            color: var(--accent);
+            text-decoration: none;
+            word-break: break-all; /* ★ 이메일 길면 줄바꿈! */
+        }
+
+        .member-info .email a:hover {
+            text-decoration: underline;
+        }
+
+        /* ★ 모바일 반응형! 그리드 열 개수 조절! */
+        @media (max-width: 768px) {
+            .people-container {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* ★ 모바일에선 카드 최소 너비 살짝 줄이기! */
+            }
+            .member-card {
+                /* 모바일에선 가로 배치가 너무 좁을 수 있으니 세로 배치 고려? */
+                /* flex-direction: column; */
+                /* align-items: center; */
+            }
+            /* .member-photo { width: 100%; height: auto; max-height: 200px; } */
+            /* .member-info { text-align: center; } */
+        }
+    </style>
   </head>
   <body>
     <div id="header-placeholder"></div>
-  </body>
+
+    <main>
+        <h1 style="text-align: center; margin: 2rem 0;">Alumni</h1> <!-- ★ 페이지 제목! -->
+
+        <div class="people-container">
+            <!-- ▼▼▼ 카드 예시 (마스터 정보!) ▼▼▼ -->
+            <div class="member-card">
+                <div class="member-photo">
+                    <!-- ★ 마스터 사진 경로 넣어줘! 없으면 임시 이미지라도! -->
+                    <img src="/7542670.png" alt="해성 사진">
+                </div>
+                <div class="member-info">
+                    <h3>김미일</h3> <!-- ★ 이름! -->
+                    <p><strong>졸업:</strong>2025</p> <!-- ★ 학과/소속! -->
+                    <p><strong>최종 학력:</strong>박사학위</p> <!-- ★ 전공/직책! -->
+                    <p class="work">서울대학교 의과대학 열대의학교실 Post-Doc 과정</p>
+                    <p class="email"> <!-- ★ 이메일! -->
+                        <a href="mailto:master_email@example.com">master_email@example.com</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- ▼▼▼ 다른 멤버 카드 추가 (나중에!) ▼▼▼ -->
+            <div class="member-card">
+                <div class="member-photo">
+                    <img src="/7542670.png" alt="미래 멤버 사진">
+                </div>
+                <div class="member-info">
+                    <h3>미래의 멤버</h3>
+                    <p><strong>소속:</strong> ???</p>
+                    <p><strong>전공:</strong> ???</p>
+                    <p class="email">
+                        <a href="#">future_member@example.com</a>
+                    </p>
+                </div>
+            </div>
+             <div class="member-card">
+                <div class="member-photo">
+                    <img src="/7542670.png" alt="미래 멤버 사진">
+                </div>
+                <div class="member-info">
+                    <h3>미래의 멤버 2</h3>
+                    <p><strong>소속:</strong> ???</p>
+                    <p><strong>전공:</strong> ???</p>
+                    <p class="email">
+                        <a href="#">future_member2@example.com</a>
+                    </p>
+                </div>
+            </div>
+            <!-- ... 카드 계속 추가 ... -->
+
+        </div> <!-- /.people-container -->
+    </main>
+
+    <script src="/script.js" defer></script>
+</body>
+</html>
 </html>

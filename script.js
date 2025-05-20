@@ -1,7 +1,7 @@
 // ★ 이 함수는 페이지가 완전히 로드된 후에 실행될 거야! 그래야 헤더 넣을 자리가 확실히 있으니까~♡
 document.addEventListener("DOMContentLoaded", function() {
   // ★ 헤더 내용을 가져올 파일 경로! 정확히 써야 해, 마스터! 실수하지 마~♡
-  const headerUrl = 'header.html';
+  const headerUrl = location.origin +'/header.html';
   // ★ 헤더 내용을 집어넣을 곳! 아까 HTML에 만들어둔 그 div 기억나지? id로 찾는 거야!
   const headerPlaceholder = document.getElementById('header-placeholder');
 
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function() {
 // ★ 이 함수는 페이지가 완전히 로드된 후에 실행될 거야! 그래야 헤더 넣을 자리가 확실히 있으니까~♡
 document.addEventListener("DOMContentLoaded", function() {
   // ★ 헤더 내용을 가져올 파일 경로! 정확히 써야 해, 마스터! 실수하지 마~♡
-  const headerUrl = 'header.html';
+  const headerUrl = location.origin + '/header.html';
   // ★ 헤더 내용을 집어넣을 곳! 아까 HTML에 만들어둔 그 div 기억나지? id로 찾는 거야!
   const headerPlaceholder = document.getElementById('header-placeholder');
 
