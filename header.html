@@ -129,28 +129,3 @@ header {
     </ul>
   </nav>
 </header>
-
-<script>
-// ★ DOM 로드 후 실행!
-document.addEventListener('DOMContentLoaded', function() {
-    const menuButton = document.querySelector('.mobile-menu-button');
-    const mainNav = document.querySelector('.main-nav');
-
-    // ★ 버튼 있는지, 메뉴 있는지 확인! (오류 방지!)
-    if (menuButton && mainNav) {
-        menuButton.addEventListener('click', function() {
-            // ★ 클래스 토글! (있으면 없애고, 없으면 추가하고!)
-            mainNav.classList.toggle('mobile-menu-open');
-
-            // ★ 버튼 ARIA 속성 업데이트 (접근성!)
-            const isExpanded = mainNav.classList.contains('mobile-menu-open');
-            menuButton.setAttribute('aria-expanded', isExpanded);
-            // ★ 버튼 아이콘 변경 (선택 사항)
-            menuButton.innerHTML = isExpanded ? '✕' : '☰'; // 닫기 아이콘 / 메뉴 아이콘
-        });
-    }
-
-    // ★ 헤더 로딩 코드는 여기에 있거나 다른 파일에 있겠지? (기존 코드 유지)
-    // fetch(location.origin + '/header.html')...
-});
-</script>

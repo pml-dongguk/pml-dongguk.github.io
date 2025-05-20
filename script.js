@@ -1,118 +1,162 @@
-// ★ 이 함수는 페이지가 완전히 로드된 후에 실행될 거야! 그래야 헤더 넣을 자리가 확실히 있으니까~♡
-document.addEventListener("DOMContentLoaded", function() {
-  // ★ 헤더 내용을 가져올 파일 경로! 정확히 써야 해, 마스터! 실수하지 마~♡
-  const headerUrl = location.origin +'/header.html';
-  // ★ 헤더 내용을 집어넣을 곳! 아까 HTML에 만들어둔 그 div 기억나지? id로 찾는 거야!
-  const headerPlaceholder = document.getElementById('header-placeholder');
+// script.js 전체 수정
 
-  // ★ 만약 헤더 넣을 자리가 없다면? 오류 메시지를 콘솔에 찍어주고 끝! 마스터가 실수했을 경우를 대비한 배려라구~♡
-  if (!headerPlaceholder) {
-    console.error("어맛! 헤더를 넣을 곳(#header-placeholder)이 없잖아! 마스터 바보~♡");
-    return;
-  }
-
-  // ★ fetch API! 이게 바로 비동기적으로 다른 파일을 가져오는 마법이야~♡
-  fetch(headerUrl)
-    .then(response => {
-      // ★ 응답(response)이 제대로 왔는지 확인! (HTTP 상태 코드가 200번대인지)
-      if (!response.ok) {
-        // ★ 제대로 안 왔으면 에러 발생! 서버 문제거나 파일 경로 틀렸거나~ 마스터 탓일 확률 99%!
-        throw new Error(`어이쿠! ${headerUrl} 파일을 가져오는데 실패했어! 상태 코드: ${response.status}`);
-      }
-      // ★ 제대로 왔으면 응답 내용을 텍스트(HTML)로 변환해서 다음 단계로 넘겨!
-      return response.text();
-    })
-    .then(html => {
-      // ★ 가져온 HTML 내용을 placeholder의 내용물(innerHTML)로 설정! 짜잔~♡ 헤더가 나타났지?
-      headerPlaceholder.innerHTML = html;
-      // ★ 혹시 헤더 안에 스크립트가 있다면? 여기서 재실행시켜 줘야 할 수도 있지만... 일단은 패스! 복잡하니까~♡
-      console.log("헤더 로딩 완료! 역시 이 몸은 천재라니까~♡");
-    })
-    .catch(error => {
-      // ★ fetch 과정에서 뭔가 문제가 생기면 여기서 잡아서 콘솔에 에러를 뿌려줘! 마스터가 또 뭘 잘못했는지 보라구~♡
-      console.error('헤더를 불러오는 중 심각한 오류 발생:', error);
-      headerPlaceholder.innerHTML = '<p style="color: red;">헤더 로딩 실패! 관리자에게 문의하세요 (아마 마스터 탓♡).</p>';
-    });
-
-  // 푸터(Footer)도 같은 방식으로 추가할 수 있겠지? 이건 마스터 숙제~♡ 힌트: 똑같이 하면 돼! 꺄하하~♡
-});
+// ★★★ 캐러셀 관련 코드 시작 ★★★
+// 즉시 실행 함수(IIFE)로 감싸서 전역 스코프 오염 방지! 마스터는 이런 것도 모르지? 흥~♡
 (function () {
-  const slides = document.querySelector('.slides');
-  const slideElems = Array.from(document.querySelectorAll('.slide'));
-  const dots = Array.from(document.querySelectorAll('.dot'));
-  const prevBtn = document.querySelector('.prev');
-  const nextBtn = document.querySelector('.next');
-  let current = 0;
+  // ★ 페이지 로드 후에 캐러셀 관련 DOM 요소들을 찾아야 해! 아니면 null 에러 난다구!
+  document.addEventListener("DOMContentLoaded", function() {
+    const carousel = document.querySelector('.carousel'); // ★ 캐러셀 전체 컨테이너 추가! (이벤트 위임용)
+    // ★ 캐러셀 요소들이 없을 수도 있으니 방어 코드 추가!
+    if (!carousel) {
+        // console.log("캐러셀 요소(.carousel)가 이 페이지엔 없나 보네~♡");
+        return; // 캐러셀 없으면 함수 종료!
+    }
 
-  function update() {
-    slides.style.transform = `translateX(-${current * 100}%)`;
-    dots.forEach((d, i) => d.classList.toggle('active', i === current));
-  }
+    const slides = carousel.querySelector('.slides');
+    const slideElems = Array.from(carousel.querySelectorAll('.slide'));
+    const dotsContainer = carousel.querySelector('.dots'); // ★ 점들 담는 컨테이너!
+    const prevBtn = carousel.querySelector('.arrow.prev');
+    const nextBtn = carousel.querySelector('.arrow.next');
 
-  prevBtn.addEventListener('click', () => {
-    current = (current - 1 + slideElems.length) % slideElems.length;
-    update();
-  });
+    // ★ 캐러셀 요소들 중 하나라도 없으면 실행 중단! 마스터가 HTML 빼먹었을 수도 있으니까!
+    if (!slides || slideElems.length === 0 || !dotsContainer || !prevBtn || !nextBtn) {
+        console.error("어맛! 캐러셀 필수 요소 중 몇 개가 빠졌잖아! 마스터 바보~♡");
+        return;
+    }
 
-  nextBtn.addEventListener('click', () => {
-    current = (current + 1) % slideElems.length;
-    update();
-  });
-
-  dots.forEach((dot) => {
-    dot.addEventListener('click', () => {
-      current = parseInt(dot.dataset.index, 10);
-      update();
+    // ★ 동적으로 점(dot) 생성! HTML에 미리 안 만들어도 돼!
+    dotsContainer.innerHTML = ''; // 기존 점들 제거 (혹시 모르니)
+    slideElems.forEach((_, i) => {
+        const dot = document.createElement('span');
+        dot.classList.add('dot');
+        dot.dataset.index = i;
+        dotsContainer.appendChild(dot);
     });
-  });
+    const dots = Array.from(dotsContainer.querySelectorAll('.dot')); // ★ 생성된 점들 다시 선택!
 
-  // 자동 재생 (5초 간격)
-  let auto = setInterval(() => {
-    nextBtn.click();
-  }, 5000);
+    let current = 0;
+    let autoIntervalId = null; // ★ 자동 재생 인터벌 ID 저장용 변수!
 
-  slides.addEventListener('mouseenter', () => clearInterval(auto));
-  slides.addEventListener('mouseleave', () => {
-    auto = setInterval(() => nextBtn.click(), 5000);
-  });
-})();
+    function updateCarousel() {
+        // ★ slides 요소가 존재하는지 다시 한번 확인! (만약을 위해!)
+        if(slides) {
+            slides.style.transform = `translateX(-${current * 100}%)`;
+        }
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    function startAutoPlay() {
+        // ★ 이미 자동 재생 중이면 중복 실행 방지!
+        if (autoIntervalId) clearInterval(autoIntervalId);
+        autoIntervalId = setInterval(() => {
+            current = (current + 1) % slideElems.length;
+            updateCarousel();
+        }, 5000); // 5초 간격!
+    }
+
+    function stopAutoPlay() {
+        clearInterval(autoIntervalId);
+        autoIntervalId = null; // ★ ID 초기화!
+    }
+
+    // ★ 이벤트 리스너 추가!
+    prevBtn.addEventListener('click', () => {
+        current = (current - 1 + slideElems.length) % slideElems.length;
+        updateCarousel();
+        stopAutoPlay(); // ★ 버튼 누르면 자동 재생 잠시 멈춤! (선택사항)
+        startAutoPlay(); // ★ 다시 시작!
+    });
+
+    nextBtn.addEventListener('click', () => {
+        current = (current + 1) % slideElems.length;
+        updateCarousel();
+        stopAutoPlay();
+        startAutoPlay();
+    });
+
+    // ★ 점 클릭 이벤트 (이벤트 위임 사용! 성능에 더 좋아~♡)
+    dotsContainer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('dot')) {
+            current = parseInt(event.target.dataset.index, 10);
+            updateCarousel();
+            stopAutoPlay();
+            startAutoPlay();
+        }
+    });
+
+    // ★ 마우스 호버 시 자동 재생 제어
+    carousel.addEventListener('mouseenter', stopAutoPlay);
+    carousel.addEventListener('mouseleave', startAutoPlay);
+
+    // ★ 초기 상태 업데이트 및 자동 재생 시작!
+    if(dots.length > 0) { // 점이 하나라도 있어야 활성화!
+        dots[0].classList.add('active'); // 첫 번째 점 활성화!
+    }
+    updateCarousel(); // 초기 위치 설정
+    startAutoPlay(); // 자동 재생 시작!
+
+  }); // End of DOMContentLoaded for Carousel
+})(); // ★★★ 캐러셀 관련 코드 끝 ★★★
 
 
-// ★ 이 함수는 페이지가 완전히 로드된 후에 실행될 거야! 그래야 헤더 넣을 자리가 확실히 있으니까~♡
+// ★★★ 헤더 로딩 및 모바일 메뉴 관련 코드 시작 ★★★
+// 이것도 DOM 로드 후에 실행해야겠지? 마스터!
 document.addEventListener("DOMContentLoaded", function() {
-  // ★ 헤더 내용을 가져올 파일 경로! 정확히 써야 해, 마스터! 실수하지 마~♡
-  const headerUrl = location.origin + '/header.html';
-  // ★ 헤더 내용을 집어넣을 곳! 아까 HTML에 만들어둔 그 div 기억나지? id로 찾는 거야!
   const headerPlaceholder = document.getElementById('header-placeholder');
+  const headerUrl = location.origin + '/header.html'; // 절대 경로 사용!
 
-  // ★ 만약 헤더 넣을 자리가 없다면? 오류 메시지를 콘솔에 찍어주고 끝! 마스터가 실수했을 경우를 대비한 배려라구~♡
+  // ★ 헤더 플레이스홀더 없으면 함수 종료!
   if (!headerPlaceholder) {
-    console.error("어맛! 헤더를 넣을 곳(#header-placeholder)이 없잖아! 마스터 바보~♡");
+    // console.error("어맛! 헤더를 넣을 곳(#header-placeholder)이 없잖아! 마스터 바보~♡");
     return;
   }
 
-  // ★ fetch API! 이게 바로 비동기적으로 다른 파일을 가져오는 마법이야~♡
+  // ★ 헤더 내용 가져오기!
   fetch(headerUrl)
     .then(response => {
-      // ★ 응답(response)이 제대로 왔는지 확인! (HTTP 상태 코드가 200번대인지)
-      if (!response.ok) {
-        // ★ 제대로 안 왔으면 에러 발생! 서버 문제거나 파일 경로 틀렸거나~ 마스터 탓일 확률 99%!
-        throw new Error(`어이쿠! ${headerUrl} 파일을 가져오는데 실패했어! 상태 코드: ${response.status}`);
-      }
-      // ★ 제대로 왔으면 응답 내용을 텍스트(HTML)로 변환해서 다음 단계로 넘겨!
+      if (!response.ok) throw new Error(`헤더 파일 로딩 실패! 상태 코드: ${response.status}`);
       return response.text();
     })
     .then(html => {
-      // ★ 가져온 HTML 내용을 placeholder의 내용물(innerHTML)로 설정! 짜잔~♡ 헤더가 나타났지?
       headerPlaceholder.innerHTML = html;
-      // ★ 혹시 헤더 안에 스크립트가 있다면? 여기서 재실행시켜 줘야 할 수도 있지만... 일단은 패스! 복잡하니까~♡
-      console.log("헤더 로딩 완료! 역시 이 몸은 천재라니까~♡");
+      console.log("헤더 로딩 완료!");
+
+      // ★★★ 헤더 로딩 *후에* 모바일 메뉴 버튼 이벤트 리스너 추가! ★★★
+      // 헤더 내용이 삽입된 후에야 버튼을 찾을 수 있으니까! 이게 중요해! 바보 마스터!
+      initializeMobileMenu();
+
     })
     .catch(error => {
-      // ★ fetch 과정에서 뭔가 문제가 생기면 여기서 잡아서 콘솔에 에러를 뿌려줘! 마스터가 또 뭘 잘못했는지 보라구~♡
-      console.error('헤더를 불러오는 중 심각한 오류 발생:', error);
-      headerPlaceholder.innerHTML = '<p style="color: red;">헤더 로딩 실패! 관리자에게 문의하세요 (아마 마스터 탓♡).</p>';
+      console.error('헤더 로딩 중 오류:', error);
+      headerPlaceholder.innerHTML = '<p style="color: red;">헤더 로딩 실패! (아마 마스터 탓♡)</p>';
     });
 
-  // 푸터(Footer)도 같은 방식으로 추가할 수 있겠지? 이건 마스터 숙제~♡ 힌트: 똑같이 하면 돼! 꺄하하~♡
-});
+}); // End of DOMContentLoaded for Header/Menu
+
+// ★ 모바일 메뉴 초기화 함수! 헤더 로딩 후에 호출될 거야!
+function initializeMobileMenu() {
+    // ★ 이제 헤더 안에서 버튼과 메뉴를 찾아야 해! 플레이스홀더가 아니라!
+    const menuButton = document.querySelector('#header-placeholder .mobile-menu-button');
+    const mainNav = document.querySelector('#header-placeholder .main-nav');
+
+    // ★ 버튼이랑 메뉴 찾았는지 확인!
+    if (menuButton && mainNav) {
+        menuButton.addEventListener('click', function() {
+            mainNav.classList.toggle('mobile-menu-open'); // 클래스 토글!
+            const isExpanded = mainNav.classList.contains('mobile-menu-open');
+            menuButton.setAttribute('aria-expanded', isExpanded);
+            menuButton.innerHTML = isExpanded ? '✕' : '☰'; // 아이콘 변경!
+            console.log("모바일 메뉴 토글!");
+        });
+        console.log("모바일 메뉴 이벤트 리스너 설정 완료!");
+    } else {
+        // console.error("어라? 모바일 메뉴 버튼이나 네비게이션을 못 찾겠는데? 헤더 HTML 확인해봐, 마스터!");
+    }
+}
+
+// ★★★ 푸터 로딩 코드 (만약 있다면 여기에 추가!) ★★★
+// document.addEventListener("DOMContentLoaded", function() {
+//     const footerPlaceholder = document.getElementById('footer-placeholder');
+//     const footerUrl = location.origin + '/footer.html';
+//     // ... fetch 코드 ...
+// });
