@@ -134,24 +134,94 @@ document.addEventListener("DOMContentLoaded", function() {
 }); // End of DOMContentLoaded for Header/Menu
 
 // ★ 모바일 메뉴 초기화 함수! 헤더 로딩 후에 호출될 거야!
+// function initializeMobileMenu() {
+//     // ★ 이제 헤더 안에서 버튼과 메뉴를 찾아야 해! 플레이스홀더가 아니라!
+//     const menuButton = document.querySelector('#header-placeholder .mobile-menu-button');
+//     const mainNav = document.querySelector('#header-placeholder .main-nav');
+
+//     // ★ 버튼이랑 메뉴 찾았는지 확인!
+//     if (menuButton && mainNav) {
+//         menuButton.addEventListener('click', function() {
+//             mainNav.classList.toggle('mobile-menu-open'); // 클래스 토글!
+//             const isExpanded = mainNav.classList.contains('mobile-menu-open');
+//             menuButton.setAttribute('aria-expanded', isExpanded);
+//             menuButton.innerHTML = isExpanded ? '✕' : '☰'; // 아이콘 변경!
+//             console.log("모바일 메뉴 토글!");
+//         });
+//         console.log("모바일 메뉴 이벤트 리스너 설정 완료!");
+//     } else {
+//         // console.error("어라? 모바일 메뉴 버튼이나 네비게이션을 못 찾겠는데? 헤더 HTML 확인해봐, 마스터!");
+//     }
+// }
+
+// ★ 모바일 메뉴 초기화 함수! 헤더 로딩 후에 호출될 거야!
 function initializeMobileMenu() {
-    // ★ 이제 헤더 안에서 버튼과 메뉴를 찾아야 해! 플레이스홀더가 아니라!
     const menuButton = document.querySelector('#header-placeholder .mobile-menu-button');
     const mainNav = document.querySelector('#header-placeholder .main-nav');
 
-    // ★ 버튼이랑 메뉴 찾았는지 확인!
     if (menuButton && mainNav) {
+        // ★ 햄버거 버튼 클릭 시 전체 메뉴 토글
         menuButton.addEventListener('click', function() {
-            mainNav.classList.toggle('mobile-menu-open'); // 클래스 토글!
+            mainNav.classList.toggle('mobile-menu-open');
             const isExpanded = mainNav.classList.contains('mobile-menu-open');
             menuButton.setAttribute('aria-expanded', isExpanded);
-            menuButton.innerHTML = isExpanded ? '✕' : '☰'; // 아이콘 변경!
-            console.log("모바일 메뉴 토글!");
+            menuButton.innerHTML = isExpanded ? '✕' : '☰';
+
+            // ★★★ 메뉴 닫힐 때 모든 하위 메뉴도 닫기! (선택사항) ★★★
+            if (!isExpanded) {
+                closeAllSubmenus(mainNav);
+            }
         });
-        console.log("모바일 메뉴 이벤트 리스너 설정 완료!");
+
+        // ★★★ 드롭다운 항목 클릭 시 하위 메뉴 토글 이벤트 추가! ★★★
+        const dropdownItems = mainNav.querySelectorAll('li.dropdown > a'); // 드롭다운 기능이 있는 'a' 태그 선택!
+
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function(event) {
+                // ★ 중요! 모바일에서는 상위 메뉴 링크 이동을 막아야 함! (하위 메뉴만 보여주도록) ★
+                // event.preventDefault(); // 만약 상위 메뉴 자체 링크가 필요 없다면 주석 해제!
+
+                const parentLi = this.parentElement; // 클릭된 a의 부모 li
+                const submenu = parentLi.querySelector('.dropdown-menu'); // 하위 메뉴 ul
+
+                if (parentLi.classList.contains('dropdown')) { // 확실히 드롭다운 항목인지 확인!
+                    // ★ 클릭된 메뉴의 하위 메뉴만 토글!
+                    parentLi.classList.toggle('submenu-open');
+
+                    // ★ 다른 열려있는 하위 메뉴들은 닫기 (선택사항 - 아코디언 효과)
+                    // closeOtherSubmenus(mainNav, parentLi);
+
+                    // ★ 기본 링크 이동 막기 (필수!) - 하위 메뉴 토글 기능만 하도록!
+                     if (submenu) { // 하위 메뉴가 있을 경우에만 링크 이동 막기
+                         event.preventDefault();
+                     }
+
+                }
+            });
+        });
+
+        console.log("모바일 메뉴 및 드롭다운 이벤트 리스너 설정 완료!");
     } else {
-        // console.error("어라? 모바일 메뉴 버튼이나 네비게이션을 못 찾겠는데? 헤더 HTML 확인해봐, 마스터!");
+        // console.error("모바일 메뉴 관련 요소를 찾지 못했습니다.");
     }
+}
+
+// ★ (선택사항) 다른 열려있는 하위 메뉴 닫는 함수
+// function closeOtherSubmenus(navElement, currentLi) {
+//     const allDropdownLis = navElement.querySelectorAll('li.dropdown.submenu-open');
+//     allDropdownLis.forEach(li => {
+//         if (li !== currentLi) {
+//             li.classList.remove('submenu-open');
+//         }
+//     });
+// }
+
+// ★ (선택사항) 모든 하위 메뉴 닫는 함수
+function closeAllSubmenus(navElement) {
+    const allOpenSubmenus = navElement.querySelectorAll('li.dropdown.submenu-open');
+    allOpenSubmenus.forEach(li => {
+        li.classList.remove('submenu-open');
+    });
 }
 
 // ★★★ 푸터 로딩 코드 (만약 있다면 여기에 추가!) ★★★

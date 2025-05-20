@@ -71,15 +71,52 @@ header {
     .main-nav a:hover {
         background-color: var(--accent); /* ★ 호버 효과! */
     }
-    /* ★ 드롭다운 메뉴 숨기기 (모바일에선 보통 다른 방식으로 처리) */
+    
+/* ★★★ 모바일 드롭다운 메뉴 스타일 수정! ★★★ */
     .main-nav .dropdown-menu {
-        display: none !important; /* ★ 확실하게 숨기기! */
+        /* display: none !important; /* 기본 숨김은 JS로 처리할 거니까 제거하거나 유지해도 됨 */
+        display: none; /* ★ JS로 .submenu-open 클래스가 추가되면 보이도록! */
+        position: static; /* ★★★ absolute 대신 static으로 변경! 중요! ★★★ */
+        background-color: rgba(0, 0, 0, 0.1); /* ★ 배경색 살짝 다르게 해서 구분! */
+        box-shadow: none; /* ★ 그림자 제거! */
+        padding: 0; /* ★ 패딩 제거! */
+        margin-top: 0; /* ★ 위쪽 마진 제거! */
+        width: 100%; /* ★ 부모 너비 꽉 채우기! */
+        border-top: 1px solid rgba(255, 255, 255, 0.1); /* ★ 상위 메뉴와 구분선! */
     }
-    /* ★ 드롭다운 기능 대신, 메인 메뉴 항목을 클릭 가능하게 하거나 다른 UI 고려! */
-    .main-nav li.dropdown > a::after { /* ★ 드롭다운 표시(화살표 등) 제거 */
-        /* content: ' ▼'; /* 예시 화살표 - 필요하면 추가 */
-        display: none;
+
+    /* ★ JS로 .submenu-open 클래스가 li.dropdown에 추가되면 하위 메뉴 보이게! */
+    .main-nav li.dropdown.submenu-open > .dropdown-menu {
+        display: block;
+    }
+
+
+    .main-nav .dropdown-menu li {
+        border-bottom: none; /* ★ 하위 메뉴 항목엔 구분선 제거! */
+    }
+
+    .main-nav .dropdown-menu a {
+        padding: 0.8rem 1rem; /* ★ 패딩 살짝 줄이기! */
+        font-size: 0.9rem; /* ★ 폰트 크기 살짝 줄이기! */
+        color: #eee; /* ★ 글자색 살짝 연하게! */
+        background-color: transparent; /* ★ 배경색 투명하게! */
+    }
+     .main-nav .dropdown-menu a:hover {
+        background-color: rgba(255, 255, 255, 0.1); /* ★ 호버 시 배경색 살짝! */
      }
+
+    /* ★ 드롭다운 기능 활성화 표시 (선택사항) */
+    .main-nav li.dropdown > a::after {
+        content: ' ▼'; /* ★ 클릭 가능한 드롭다운임을 표시! */
+        display: inline-block; /* ★ 옆으로 보이게! */
+        font-size: 0.7em; /* ★ 아이콘 크기 작게! */
+        margin-left: 0.5em; /* ★ 간격! */
+        transition: transform 0.3s ease; /* ★ 부드러운 회전 효과! */
+    }
+    /* ★ 하위 메뉴 열렸을 때 화살표 방향 변경! */
+    .main-nav li.dropdown.submenu-open > a::after {
+        transform: rotate(180deg);
+    }
 
 
     /* ★ 모바일 메뉴 버튼 보이기! */
